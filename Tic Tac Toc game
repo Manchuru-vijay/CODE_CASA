@@ -1,0 +1,195 @@
+// Html code
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width">
+<title>Tic Tac Toe</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+            <button class="button-option"></button>
+        </div>
+        <button id="restart">Restart</button>
+    </div>
+    <div class="popup hide">
+        <p id="message">Sample Message</p>
+        <button id="new-game">New Game</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+//Css Code
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: "Times New Roman", sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(120deg, #ffeecc, #996600);
+}
+
+html {
+    font-size: 13px;
+}
+
+.wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.container {
+    width: 70vw;
+    height: 70vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vmin;
+}
+
+.button-option {
+    background: #99ff99;
+    height: 22vmin;
+    width: 22vmin;
+    border: none;
+    border-radius: 8px;
+    font-size: 12vmin;
+    color: #ff3399;
+}
+
+#restart {
+    font-size: 1.3em;
+    padding: 1.5em;
+    border-radius: 8px;
+    background-color: #66ffff;
+    color: black;
+    border: none;
+    position: relative;
+    margin: 1.5em auto 0 auto;
+    display: block;
+}
+
+.popup {
+    background: linear-gradient(120deg, #ffeecc, #996600);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 8vmin;
+}
+
+#new-game {
+    font-size: 38px;
+    padding: 0.7em 1.1em;
+    background-color: #4d79ff;
+    color: #ffffff;
+    border-radius: 0.25em;
+    border: none;
+}
+
+#message {
+    color: #ff0000;
+    text-align: center;
+    font-size: 1em;
+}
+
+.popup.hide {
+    display: none;
+}
+// JavaScript Code
+let btnRef = document.querySelectorAll(".button-option");
+let popupRef = document.querySelector(".popup");
+let newgameBtn = document.getElementById("new-game");
+let restartBtn = document.getElementById("restart");
+let msgRef = document.getElementById("message");
+let winningPattern = [
+    [0, 1, 2],
+    [0, 3, 6],
+    [2, 5, 8],
+    [6, 7, 8],
+    [3, 4, 5],
+    [1, 4, 7],
+    [0, 4, 8],
+    [2, 4, 6],
+];
+let xTurn = true;
+let count = 0;
+const disableButtons = () => {
+    btnRef.forEach((element) => (element.disabled = true));
+    popupRef.classList.remove("hide");
+};
+const enableButtons = () => {
+    btnRef.forEach((element) => {
+        element.innerText = "";
+        element.disabled = false;
+    });
+    popupRef.classList.add("hide");
+};
+const winFunction = (letter) => {
+    disableButtons();
+    if (letter === "X") {
+        msgRef.innerHTML = "'X' Wins";
+    } else {
+        msgRef.innerHTML = " 'O' Wins";
+    }
+};
+const drawFunction = () => {
+    disableButtons();
+    msgRef.innerHTML = " It's a Draw";
+};
+newgameBtn.addEventListener("click", () => {
+    count = 0;
+    enableButtons();
+});
+restartBtn.addEventListener("click", () => {
+    count = 0;
+    enableButtons();
+});
+const winChecker = () => {
+    for (let i of winningPattern) {
+        let [element1, element2, element3] = [
+            btnRef[i[0]].innerText,
+            btnRef[i[1]].innerText,
+            btnRef[i[2]].innerText,
+        ];
+        if (element1 !== "" && (element2 !== "") & (element3 !== "")) {
+            if (element1 === element2 && element2 === element3) {
+                winFunction(element1);
+            }
+        }
+    }
+};
+btnRef.forEach((element) => {
+    element.addEventListener("click", () => {
+        if (xTurn) {
+            xTurn = false;
+            element.innerText = "X";
+            element.disabled = true;
+        } else {
+            xTurn = true;
+            element.innerText = "O";
+            element.disabled = true;
+        }
+        count += 1;
+        if (count === 9) {
+            drawFunction();
+        }
+        winChecker();
+    });
+});
+window.onload = enableButtons;
